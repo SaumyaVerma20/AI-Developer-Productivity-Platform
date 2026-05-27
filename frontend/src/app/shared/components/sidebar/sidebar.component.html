@@ -1,1 +1,23 @@
-<p>sidebar works!</p>
+<div class="sidebar">
+
+    <div class="logo-section">
+        <h2>AI Ops</h2>
+    </div>
+
+    <div class="menu-section">
+
+        <a *ngFor="let item of menuItems" [routerLink]="item.route" routerLinkActive="active-menu" class="menu-item">
+
+            <span class="material-icons menu-icon">
+                {{ item.icon }}
+            </span>
+
+            <span class="menu-label">
+                {{ item.label }}
+            </span>
+
+        </a>
+
+    </div>
+
+</div>
