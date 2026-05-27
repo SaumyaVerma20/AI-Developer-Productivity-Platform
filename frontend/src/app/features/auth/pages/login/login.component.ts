@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { AuthService } from '../../../../core/services/api/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,13 +20,19 @@ export class LoginComponent {
   email = '';
   password = '';
 
-  login(): void {
-    console.log('Login clicked');
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-    console.log({
-      email: this.email,
-      password: this.password
-    });
+  login(): void {
+
+    // Temporary mock token
+    const mockToken = 'mock-jwt-token';
+
+    this.authService.login(mockToken);
+
+    this.router.navigate(['/dashboard']);
   }
 
 }
