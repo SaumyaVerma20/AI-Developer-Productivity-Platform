@@ -1,12 +1,29 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+
+  email = '';
+  password = '';
+
+  login(): void {
+    console.log('Login clicked');
+
+    console.log({
+      email: this.email,
+      password: this.password
+    });
+  }
 
 }
