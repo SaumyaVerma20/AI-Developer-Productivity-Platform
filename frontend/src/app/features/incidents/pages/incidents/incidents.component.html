@@ -1,1 +1,113 @@
-<p>incidents works!</p>
+<div class="incidents-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>Incident Management</h1>
+
+            <p>
+                Monitor and manage operational incidents
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Stats -->
+
+    <div class="incident-stats">
+
+        <div class="stat-card critical">
+            <h3>Critical</h3>
+            <p>3</p>
+        </div>
+
+        <div class="stat-card high">
+            <h3>High</h3>
+            <p>7</p>
+        </div>
+
+        <div class="stat-card medium">
+            <h3>Medium</h3>
+            <p>12</p>
+        </div>
+
+        <div class="stat-card low">
+            <h3>Low</h3>
+            <p>5</p>
+        </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="search-panel">
+
+        <input
+            type="text"
+            placeholder="Search incidents..."
+            [(ngModel)]="searchTerm"
+            (input)="filterIncidents()"
+        >
+
+    </div>
+
+    <!-- Table -->
+
+    <div class="table-panel">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Incident ID</th>
+                    <th>Service</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let incident of filteredIncidents">
+
+                    <td>{{ incident.id }}</td>
+
+                    <td>{{ incident.service }}</td>
+
+                    <td>
+
+                        <span
+                            class="severity-badge"
+                            [ngClass]="incident.severity.toLowerCase()"
+                        >
+                            {{ incident.severity }}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="status-badge"
+                        >
+                            {{ incident.status }}
+                        </span>
+
+                    </td>
+
+                    <td>{{ incident.createdAt }}</td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

@@ -136,3 +136,7 @@ body {
 .app-input:focus {
     border-color: var(--info-color);
 }
+.mdc-list-item__content {
+    display: flex;
+    align-items: center;
+}
