@@ -1,1 +1,81 @@
-<p>upload-logs works!</p>
+<div class="upload-page">
+
+    <div class="page-header">
+
+        <h1>Upload Logs</h1>
+
+        <p>
+            Upload application logs for AI-powered incident analysis
+        </p>
+
+    </div>
+
+    <div class="upload-panel">
+
+        <div class="upload-dropzone">
+
+            <div class="upload-icon">
+                📂
+            </div>
+
+            <h2>Select Log File</h2>
+
+            <p>
+                Supported formats:
+                .log, .txt, .json
+            </p>
+
+            <input
+                type="file"
+                (change)="onFileSelected($event)"
+            >
+
+        </div>
+
+        <div
+            class="selected-file"
+            *ngIf="selectedFile"
+        >
+
+            <h3>Selected File</h3>
+
+            <div class="file-card">
+
+                <div class="file-name">
+                    {{ selectedFile.name }}
+                </div>
+
+                <div class="file-size">
+                    {{ selectedFile.size / 1024 | number:'1.0-2' }} KB
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="upload-button"
+            (click)="uploadLogs()"
+            [disabled]="isUploading"
+        >
+
+            <span *ngIf="!isUploading">
+                Upload Logs
+            </span>
+
+            <span *ngIf="isUploading">
+                Uploading...
+            </span>
+
+        </button>
+
+        <div
+            class="upload-message"
+            *ngIf="uploadMessage"
+        >
+            {{ uploadMessage }}
+        </div>
+
+    </div>
+
+</div>

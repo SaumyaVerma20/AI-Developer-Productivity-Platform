@@ -1,20 +1,134 @@
-<h1>Dashboard</h1>
+<div class="dashboard-container">
 
-<div class="cards-container">
-
-    <div class="summary-card">
-        <h3>Critical Incidents</h3>
-        <p>12</p>
+    <div class="page-header">
+        <h1>Operations Dashboard</h1>
+        <p>AI Incident Intelligence Platform</p>
     </div>
 
-    <div class="summary-card">
-        <h3>AI Analyses</h3>
-        <p>145</p>
+    <!-- Summary Cards -->
+
+    <div class="summary-cards">
+
+        <div class="summary-card">
+            <h3>Critical Incidents</h3>
+            <p>{{ dashboardSummary?.criticalIncidents }}</p>
+        </div>
+
+        <div class="summary-card">
+            <h3>AI Analyses</h3>
+            <p>{{ dashboardSummary?.aiAnalyses }}</p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Retry Failures</h3>
+            <p>{{ dashboardSummary?.retryFailures }}</p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Services Monitored</h3>
+            <p>{{ dashboardSummary?.servicesMonitored }}</p>
+        </div>
+
     </div>
 
-    <div class="summary-card">
-        <h3>Retry Failures</h3>
-        <p>8</p>
+    <!-- Main Grid -->
+
+    <div class="dashboard-grid">
+
+        <!-- Recent Incidents -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <h2>Recent Incidents</h2>
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Service</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let incident of recentIncidents">
+
+                        <td>{{ incident.id }}</td>
+                        <td>{{ incident.service }}</td>
+
+                        <td>
+                            <span class="severity-badge">
+                                {{ incident.severity }}
+                            </span>
+                        </td>
+
+                        <td>{{ incident.status }}</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- AI Insights -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <h2>AI Insights</h2>
+            </div>
+
+            <div class="insight-card">
+                72% of today's failures are related to Redis timeout issues.
+            </div>
+
+            <div class="insight-card">
+                Retry spikes detected in payment-service.
+            </div>
+
+            <div class="insight-card">
+                Circuit breaker opened 14 times in last 1 hour.
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Service Health -->
+
+    <div class="panel service-health-panel">
+
+        <div class="panel-header">
+            <h2>Service Health</h2>
+        </div>
+
+        <div class="service-list">
+
+            <div class="service-item" *ngFor="let service of services">
+
+                <div class="service-name">
+                    {{ service.name }}
+                </div>
+
+                <div class="service-status" [ngClass]="{
+                      'healthy': service.status === 'Healthy',
+                      'degraded': service.status === 'Degraded',
+                      'critical': service.status === 'Critical'
+                    }">
+                    {{ service.status }}
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>

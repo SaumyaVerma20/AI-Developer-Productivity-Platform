@@ -2,10 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  height: 100%;
-  margin: 0;
-  background: #0f172a;
-  color: white;
-  font-family: Roboto, sans-serif;
+/* =========================================
+   GLOBAL THEME VARIABLES
+========================================= */
+
+:root {
+
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #1e293b;
+
+    --border-color: #334155;
+
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+
+    --success-color: #16a34a;
+    --warning-color: #d97706;
+    --danger-color: #dc2626;
+    --info-color: #2563eb;
+
+    --sidebar-width: 260px;
+    --navbar-height: 70px;
+
+    --card-radius: 14px;
+
+    --transition-speed: 0.2s;
+}
+
+/* =========================================
+   GLOBAL RESET
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================================
+   HTML/BODY
+========================================= */
+
+html,
+body {
+    height: 100%;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: Roboto, sans-serif;
+}
+
+/* =========================================
+   BODY
+========================================= */
+
+body {
+    overflow: hidden;
+}
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* =========================================
+   COMMON PAGE STYLING
+========================================= */
+
+.page-container {
+    padding: 24px;
+}
+
+/* =========================================
+   COMMON PANEL STYLING
+========================================= */
+
+.panel {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 24px;
+}
+
+/* =========================================
+   COMMON BUTTON
+========================================= */
+
+.primary-button {
+    background-color: var(--info-color);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition-speed);
+}
+
+.primary-button:hover {
+    opacity: 0.9;
+}
+
+/* =========================================
+   COMMON INPUT
+========================================= */
+
+.app-input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #475569;
+    background-color: var(--bg-primary);
+    color: white;
+    outline: none;
+}
+
+.app-input:focus {
+    border-color: var(--info-color);
 }

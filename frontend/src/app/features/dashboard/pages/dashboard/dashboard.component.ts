@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { TestApiService } from '../../../../core/services/api/test-api.service';
+import { DashboardApiService } from '../../../../core/services/api/dashboard-api.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,19 +12,69 @@ import { TestApiService } from '../../../../core/services/api/test-api.service';
 })
 export class DashboardComponent implements OnInit {
 
+  dashboardSummary: any;
+
+  recentIncidents = [
+    {
+      id: 'INC-1001',
+      service: 'payment-service',
+      severity: 'Critical',
+      status: 'Open'
+    },
+    {
+      id: 'INC-1002',
+      service: 'auth-service',
+      severity: 'Medium',
+      status: 'Investigating'
+    },
+    {
+      id: 'INC-1003',
+      service: 'order-service',
+      severity: 'High',
+      status: 'Resolved'
+    }
+  ];
+
+  services = [
+    {
+      name: 'payment-service',
+      status: 'Healthy'
+    },
+    {
+      name: 'auth-service',
+      status: 'Degraded'
+    },
+    {
+      name: 'notification-service',
+      status: 'Critical'
+    }
+  ];
+
   constructor(
-    private testApiService: TestApiService
+    private dashboardApiService: DashboardApiService
   ) {}
 
   ngOnInit(): void {
 
-    this.testApiService.testRequest()
+    this.loadDashboardSummary();
+
+  }
+
+  loadDashboardSummary(): void {
+
+    this.dashboardApiService
+      .getDashboardSummary()
       .subscribe({
         next: (response) => {
+
           console.log(response);
+
+          this.dashboardSummary = response;
         },
         error: (error) => {
+
           console.error(error);
+
         }
       });
 

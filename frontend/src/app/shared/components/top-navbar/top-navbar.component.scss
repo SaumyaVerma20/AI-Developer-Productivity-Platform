@@ -1,0 +1,31 @@
+.top-navbar {
+    height: var(--navbar-height);
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 24px;
+}
+
+.left-section h2 {
+    font-size: 20px;
+    color: white;
+}
+
+.user-badge {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+
+    background-color: #2563eb;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+    font-weight: bold;
+}

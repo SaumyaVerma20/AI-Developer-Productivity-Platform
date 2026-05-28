@@ -1,11 +1,14 @@
 .layout-container {
     display: flex;
-    background-color: #0f172a;
-    min-height: 100vh;
+    height: 100vh;
+    background-color: var(--bg-primary);
 }
 
 .content-container {
     flex: 1;
+    overflow-y: auto;
+}
+
+.page-content {
     padding: 24px;
-    color: white;
 }
