@@ -38,4 +38,33 @@ public class AuthService {
                 .build();
     }
 
+    public String register(RegisterRequest request) {
+
+    boolean exists =
+            userRepository.existsByEmail(
+                    request.getEmail());
+
+    if (exists) {
+        throw new RuntimeException(
+                "Email already exists");
+    }
+
+    User user = new User();
+
+    user.setName(request.getName());
+
+    user.setEmail(request.getEmail());
+
+    user.setPassword(
+            passwordEncoder.encode(
+                    request.getPassword())
+    );
+
+    user.setRole("USER");
+
+    userRepository.save(user);
+
+    return "User registered successfully";
+}
+
 }
