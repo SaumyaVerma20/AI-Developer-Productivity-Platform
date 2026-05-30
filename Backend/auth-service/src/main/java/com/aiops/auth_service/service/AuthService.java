@@ -9,6 +9,7 @@ import com.aiops.auth_service.dto.*;
 import com.aiops.auth_service.entity.User;
 import com.aiops.auth_service.repository.UserRepository;
 import com.aiops.auth_service.security.JwtService;
+import com.aiops.auth_service.entity.Role;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +61,7 @@ public class AuthService {
                     request.getPassword())
     );
 
-    user.setRole("USER");
+    user.setRole(Role.USER);
 
     userRepository.save(user);
 

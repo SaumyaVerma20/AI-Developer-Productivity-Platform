@@ -4,34 +4,50 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import com.aiops.auth_service.filter.JwtAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
+@RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-        http
+    @Bean
+SecurityFilterChain securityFilterChain(
+        HttpSecurity http
+) throws Exception {
+
+    return http
             .csrf(csrf -> csrf.disable())
 
-            .httpBasic(httpBasic -> httpBasic.disable())
+            .sessionManagement(session ->
+                    session.sessionCreationPolicy(
+                            SessionCreationPolicy.STATELESS
+                    )
+            )
 
-            .formLogin(form -> form.disable())
+            .authorizeHttpRequests(auth ->
+                    auth
+                        .requestMatchers(
+                                "/api/v1/auth/register",
+                                "/api/v1/auth/login"
+                        ).permitAll()
 
-            .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated()
+            )
 
-                .requestMatchers(
-                        "/api/v1/auth/**"
-                ).permitAll()
+            .addFilterBefore(
+                    jwtAuthenticationFilter,
+                    UsernamePasswordAuthenticationFilter.class
+            )
 
-                .anyRequest().authenticated()
-            );
-
-        return http.build();
-    }
+            .build();
+}
 }

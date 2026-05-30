@@ -1,6 +1,7 @@
 package com.aiops.auth_service.entity;
 import jakarta.persistence.*;
 
+
 import lombok.*;
 
 @Entity
@@ -25,5 +26,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private String role;
+    
+    @Enumerated(EnumType.STRING)
+     private Role role;
 }
