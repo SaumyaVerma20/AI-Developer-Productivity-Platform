@@ -1,4 +1,5 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
-    "java.jdt.ls.vmargs": "-Duser.timezone=Asia/Kolkata"
+    "java.jdt.ls.vmargs": "-Duser.timezone=Asia/Kolkata",
+    "java.compile.nullAnalysis.mode": "automatic"
 }
