@@ -4,7 +4,7 @@ import com.aiops.incident_service.entity.IncidentStatus;
 import lombok.Data;
 
 @Data
-public class UpdateIncidentRequest {
+public class ResolveIncidentRequest {
 
     private IncidentStatus status;
 }

@@ -1,61 +1,89 @@
 package com.aiops.incident_service.controller;
 
-import com.aiops.incident_service.dto.CreateIncidentRequest;
+import com.aiops.incident_service.dto.DashboardSummaryResponse;
+import com.aiops.incident_service.dto.IncidentListResponse;
 import com.aiops.incident_service.dto.IncidentResponse;
-import com.aiops.incident_service.dto.UpdateIncidentRequest;
+import com.aiops.incident_service.dto.TrendResponse;
 import com.aiops.incident_service.service.IncidentService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/incidents")
-@RequiredArgsConstructor
+@RequestMapping("/api/v1")
 public class IncidentController {
 
     private final IncidentService incidentService;
 
-    @PostMapping
-    public IncidentResponse createIncident(
-            @Valid @RequestBody CreateIncidentRequest request
-    ) {
+    public IncidentController(
+            IncidentService incidentService) {
 
-        return incidentService.createIncident(request);
+        this.incidentService = incidentService;
     }
 
-    @GetMapping
-    public List<IncidentResponse> getAllIncidents() {
+    @GetMapping("/incidents/{incidentId}")
+    public IncidentResponse getIncident(
+            @PathVariable Long incidentId) {
 
-        return incidentService.getAllIncidents();
+        return incidentService
+                .getIncidentById(incidentId);
     }
 
-    @GetMapping("/{id}")
-    public IncidentResponse getIncidentById(
-            @PathVariable Long id
+    @GetMapping("/incidents")
+    public IncidentListResponse getIncidents(
+
+            @RequestParam(defaultValue = "0")
+            int page,
+
+            @RequestParam(defaultValue = "10")
+            int size,
+
+            @RequestParam(required = false)
+            String status,
+
+            @RequestParam(required = false)
+            String severity
     ) {
 
-        return incidentService.getIncidentById(id);
-    }
-
-    @PutMapping("/{id}")
-    public IncidentResponse updateIncident(
-            @PathVariable Long id,
-            @RequestBody UpdateIncidentRequest request
-    ) {
-
-        return incidentService.updateIncident(
-                id,
-                request
+        return incidentService.getAllIncidents(
+                page,
+                size,
+                status,
+                severity
         );
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteIncident(
-            @PathVariable Long id
-    ) {
+    @GetMapping(
+            "/incidents/{incidentId}/timeline")
+    public List<String> getTimeline(
+            @PathVariable Long incidentId) {
 
-        incidentService.deleteIncident(id);
+        return incidentService
+                .getIncidentTimeline(incidentId);
+    }
+
+    @PatchMapping(
+            "/incidents/{incidentId}/resolve")
+    public IncidentResponse resolveIncident(
+            @PathVariable Long incidentId) {
+
+        return incidentService
+                .resolveIncident(incidentId);
+    }
+
+    @GetMapping("/dashboard/summary")
+    public DashboardSummaryResponse
+    getSummary() {
+
+        return incidentService
+                .getDashboardSummary();
+    }
+
+    @GetMapping("/dashboard/trends")
+    public List<TrendResponse>
+    getTrends() {
+
+        return incidentService.getTrends();
     }
 }
