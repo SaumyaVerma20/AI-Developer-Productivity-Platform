@@ -50,14 +50,25 @@ public class AuthController {
         return authService.login(request);
     }
 
+    @PostMapping("/refresh")
+    public TokenRefreshResponse refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
+        return authService.refreshToken(request);
+    }
+
+    @PostMapping("/logout")
+    public String logout(@Valid @RequestBody LogoutRequest request) {
+        authService.logout(request);
+        return "Log out successful";
+    }
+
     @GetMapping("/test")
     public String test() {
         return "Protected API reached";
     }
 
     @GetMapping("/admin")
-@PreAuthorize("hasRole('ADMIN')")
-public String admin(){
-   return "Admin access";
-}
+    @PreAuthorize("hasRole('ADMIN')")
+    public String admin(){
+       return "Admin access";
+    }
 }
