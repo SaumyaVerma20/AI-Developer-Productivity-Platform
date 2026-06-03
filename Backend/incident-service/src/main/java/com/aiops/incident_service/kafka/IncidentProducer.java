@@ -16,20 +16,11 @@ public class IncidentProducer {
     }
 
     public void publishIncident(
-            Long incidentId,
-            String message) {
-
-        IncidentEvent event =
-                new IncidentEvent();
-
-        event.setIncidentId(
-                incidentId);
-
-        event.setMessage(
-                message);
+            IncidentEvent incidentEvent) {
 
         kafkaTemplate.send(
                 "incident-events",
-                event);
+                incidentEvent
+        );
     }
 }

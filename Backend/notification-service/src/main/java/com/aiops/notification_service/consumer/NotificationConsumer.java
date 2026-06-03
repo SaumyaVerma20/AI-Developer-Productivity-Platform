@@ -1,5 +1,6 @@
 package com.aiops.notification_service.consumer;
 
+import com.aiops.notification_service.dto.IncidentEvent;
 import com.aiops.notification_service.dto.NotificationEvent;
 import com.aiops.notification_service.service.NotificationService;
 
@@ -19,12 +20,30 @@ public class NotificationConsumer {
     }
 
     @KafkaListener(
-            topics = "notifications.send",
+            topics = "incident-events",
             groupId = "notification-group")
     public void consume(
-            NotificationEvent event) {
+            IncidentEvent event) {
+
+        System.out.println(
+                "Received: "
+                + event.getTitle());
+
+        NotificationEvent notificationEvent =
+                new NotificationEvent();
+
+        notificationEvent.setIncidentId(
+                event.getIncidentId());
+
+        notificationEvent.setMessage(
+                "New Incident Created: "
+                + event.getTitle());
+
+        notificationEvent.setSeverity(
+                event.getSeverity());
 
         notificationService
-                .processNotification(event);
+                .processNotification(
+                        notificationEvent);
     }
 }

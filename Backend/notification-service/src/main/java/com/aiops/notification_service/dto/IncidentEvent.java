@@ -1,13 +1,17 @@
 package com.aiops.notification_service.dto;
 
-import lombok.Getter;
+import lombok.*;
 import lombok.Setter;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class IncidentEvent {
 
     private Long incidentId;
-
-    private String message;
+    private String title;
+    private String description;
+    private String severity;
+    private LocalDateTime createdAt;
 }

@@ -27,7 +27,8 @@ public class IncidentEventConsumer {
                 event.getIncidentId());
 
         notification.setMessage(
-                event.getMessage());
+        "New Incident Created: "
+                + event.getTitle());
 
         notification.setSeverity(
                 "HIGH");

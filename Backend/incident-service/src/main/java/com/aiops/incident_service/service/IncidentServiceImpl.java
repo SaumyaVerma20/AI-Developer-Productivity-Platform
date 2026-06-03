@@ -1,6 +1,7 @@
 package com.aiops.incident_service.service;
 
 import com.aiops.incident_service.dto.DashboardSummaryResponse;
+import com.aiops.incident_service.dto.IncidentEvent;
 import com.aiops.incident_service.dto.IncidentListResponse;
 import com.aiops.incident_service.dto.IncidentResponse;
 import com.aiops.incident_service.dto.TrendResponse;
@@ -248,25 +249,24 @@ public List<TrendResponse> getTrends() {
 }
 
 @Override
-public IncidentResponse createIncident(
-        Incident incident) {
+public IncidentResponse createIncident(Incident incident) {
 
-    incident.setCreatedAt(
-            LocalDateTime.now());
-
-    incident.setStatus(
-            IncidentStatus.OPEN);
+    incident.setCreatedAt(LocalDateTime.now());
+    incident.setStatus(IncidentStatus.OPEN);
 
     Incident savedIncident =
-            incidentRepository.save(
-                    incident);
+            incidentRepository.save(incident);
 
-    incidentProducer.publishIncident(
-        savedIncident.getId(),
-        "New Incident Created: "
-                + savedIncident.getTitle());
+    IncidentEvent event = new IncidentEvent(
+            savedIncident.getId(),
+            savedIncident.getTitle(),
+            savedIncident.getDescription(),
+            savedIncident.getSeverity(),
+            savedIncident.getCreatedAt()
+    );
 
-    return mapToResponse(
-            savedIncident);
+    incidentProducer.publishIncident(event);
+
+    return mapToResponse(savedIncident);
 }
 }
