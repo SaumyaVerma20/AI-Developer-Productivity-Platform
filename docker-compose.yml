@@ -12,11 +12,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./Backend/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   auth-service:
     build:
-      context: ../auth-service
+      context: ./Backend/auth-service
       dockerfile: Dockerfile
     container_name: aiops-auth-service
     restart: always
@@ -33,7 +33,7 @@ services:
 
   incident-service:
     build:
-      context: ../incident-service
+      context: ./Backend/incident-service
       dockerfile: Dockerfile
     container_name: aiops-incident-service
     restart: always
@@ -50,7 +50,7 @@ services:
 
   frontend:
     build:
-      context: ../../frontend
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: aiops-frontend
     restart: always
