@@ -8,12 +8,11 @@ import lombok.Data;
 @Data
 public class CreateIncidentRequest {
 
-    @NotBlank
-    private String title;
+   private String title;
 
-    @NotBlank
     private String description;
 
-    @NotNull
-    private Severity severity;
+    private String severity;
+
+    private String source;
 }
