@@ -7,6 +7,7 @@ import com.aiops.incident_service.dto.TrendResponse;
 import com.aiops.incident_service.entity.Incident;
 import com.aiops.incident_service.entity.IncidentStatus;
 import com.aiops.incident_service.exception.IncidentNotFoundException;
+import com.aiops.incident_service.kafka.IncidentProducer;
 import com.aiops.incident_service.repository.IncidentRepository;
 
 import org.springframework.data.domain.PageRequest;
@@ -23,11 +24,13 @@ public class IncidentServiceImpl
         implements IncidentService {
 
     private final IncidentRepository incidentRepository;
+    private final IncidentProducer incidentProducer;
 
     public IncidentServiceImpl(
-            IncidentRepository incidentRepository) {
+            IncidentRepository incidentRepository, IncidentProducer incidentProducer) {
 
         this.incidentRepository = incidentRepository;
+        this.incidentProducer = incidentProducer;
     }
 
     @Override
@@ -244,4 +247,26 @@ public List<TrendResponse> getTrends() {
     return response;
 }
 
+@Override
+public IncidentResponse createIncident(
+        Incident incident) {
+
+    incident.setCreatedAt(
+            LocalDateTime.now());
+
+    incident.setStatus(
+            IncidentStatus.OPEN);
+
+    Incident savedIncident =
+            incidentRepository.save(
+                    incident);
+
+    incidentProducer.publishIncident(
+        savedIncident.getId(),
+        "New Incident Created: "
+                + savedIncident.getTitle());
+
+    return mapToResponse(
+            savedIncident);
+}
 }

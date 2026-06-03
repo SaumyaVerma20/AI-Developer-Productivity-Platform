@@ -4,6 +4,7 @@ import com.aiops.incident_service.dto.DashboardSummaryResponse;
 import com.aiops.incident_service.dto.IncidentListResponse;
 import com.aiops.incident_service.dto.IncidentResponse;
 import com.aiops.incident_service.dto.TrendResponse;
+import com.aiops.incident_service.entity.Incident;
 
 import java.util.List;
 
@@ -27,5 +28,8 @@ public interface IncidentService {
     DashboardSummaryResponse getDashboardSummary();
 
     List<TrendResponse> getTrends();
+
+    IncidentResponse createIncident(
+        Incident incident);
 
 }

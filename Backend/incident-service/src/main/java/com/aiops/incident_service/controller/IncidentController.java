@@ -4,6 +4,7 @@ import com.aiops.incident_service.dto.DashboardSummaryResponse;
 import com.aiops.incident_service.dto.IncidentListResponse;
 import com.aiops.incident_service.dto.IncidentResponse;
 import com.aiops.incident_service.dto.TrendResponse;
+import com.aiops.incident_service.entity.Incident;
 import com.aiops.incident_service.service.IncidentService;
 
 import org.springframework.web.bind.annotation.*;
@@ -86,4 +87,13 @@ public class IncidentController {
 
         return incidentService.getTrends();
     }
+
+    @PostMapping("/incidents")
+public IncidentResponse createIncident(
+        @RequestBody Incident incident) {
+
+    return incidentService
+            .createIncident(
+                    incident);
+}
 }

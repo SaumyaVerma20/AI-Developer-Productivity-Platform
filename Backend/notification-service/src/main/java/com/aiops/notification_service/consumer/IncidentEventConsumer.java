@@ -3,18 +3,39 @@ package com.aiops.notification_service.consumer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import com.aiops.notification_service.dto.IncidentEvent;
+import com.aiops.notification_service.dto.NotificationEvent;
+import com.aiops.notification_service.service.NotificationService;
+
 @Service
 public class IncidentEventConsumer {
 
-    @KafkaListener(
-            topics = "incident-events",
-            groupId = "notification-group"
-    )
-    public void consume(String message){
+    private final NotificationService notificationService;
 
-        System.out.println("========== EVENT RECEIVED ==========");
-        System.out.println(message);
-        System.out.println("====================================");
+    public IncidentEventConsumer(
+            NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
 
+    @KafkaListener(topics = "incident-events")
+    public void consume(IncidentEvent event) {
+
+        NotificationEvent notification =
+                new NotificationEvent();
+
+        notification.setIncidentId(
+                event.getIncidentId());
+
+        notification.setMessage(
+                event.getMessage());
+
+        notification.setSeverity(
+                "HIGH");
+
+        notification.setRecipient(
+                "admin@company.com");
+
+        notificationService
+                .processNotification(notification);
     }
 }
