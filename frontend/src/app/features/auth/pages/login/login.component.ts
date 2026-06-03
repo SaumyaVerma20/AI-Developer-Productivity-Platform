@@ -26,7 +26,6 @@ export class LoginComponent {
   ) {}
 
   login(): void {
-
     // Temporary mock token
     const mockToken = 'mock-jwt-token';
 
@@ -34,5 +33,4 @@ export class LoginComponent {
 
     this.router.navigate(['/dashboard']);
   }
-
 }
