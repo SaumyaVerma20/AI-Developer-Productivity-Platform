@@ -48,6 +48,23 @@ services:
     depends_on:
       - postgres
 
+  log-service:
+    build:
+      context: ../log-service
+      dockerfile: Dockerfile
+    container_name: aiops-log-service
+    restart: always
+    ports:
+      - "8084:8084"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=logdb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      - postgres
+
   frontend:
     build:
       context: ../../frontend

@@ -45,6 +45,25 @@ services:
       - DB_NAME=incidentdb
       - DB_USER=postgres
       - DB_PASSWORD=postgres
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    depends_on:
+      - postgres
+
+  log-service:
+    build:
+      context: ./Backend/log-service
+      dockerfile: Dockerfile
+    container_name: aiops-log-service
+    restart: always
+    ports:
+      - "8084:8084"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=logdb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
     depends_on:
       - postgres
 
