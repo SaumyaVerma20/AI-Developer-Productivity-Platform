@@ -5,6 +5,8 @@ import com.aiops.ai_analysis_service.dto.IncidentEvent;
 import com.aiops.ai_analysis_service.entity.AIAnalysis;
 import com.aiops.ai_analysis_service.repository.AIAnalysisRepository;
 import com.aiops.ai_analysis_service.service.AIAnalysisService;
+import com.aiops.ai_analysis_service.dto.AIAnalysisCompletedEvent;
+import com.aiops.ai_analysis_service.service.AIAnalysisEventProducer;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 @Service
 public class AIAnalysisServiceImpl
         implements AIAnalysisService {
+                private final AIAnalysisEventProducer eventProducer;
 
     private final AIAnalysisRepository
             aiAnalysisRepository;
@@ -23,13 +26,15 @@ public class AIAnalysisServiceImpl
 
     public AIAnalysisServiceImpl(
             AIAnalysisRepository aiAnalysisRepository,
-            ChatClient chatClient) {
+            ChatClient chatClient,AIAnalysisEventProducer eventProducer) {
 
         this.aiAnalysisRepository =
                 aiAnalysisRepository;
 
         this.chatClient =
                 chatClient;
+        this.eventProducer =
+            eventProducer;  
     }
 
     @Override
@@ -39,7 +44,14 @@ public class AIAnalysisServiceImpl
 
         String prompt =
                 """
-                Analyze this production incident:
+                You are a Senior Site Reliability Engineer.
+                You are responsible for production systems.
+                Given an incident, determine
+
+                1 Root Cause
+                2 Recommendation
+
+                Keep each under 60 words.
 
                 Title: %s
                 Description: %s
@@ -109,6 +121,26 @@ public class AIAnalysisServiceImpl
 
         AIAnalysisResponse response =
                 new AIAnalysisResponse();
+        
+        AIAnalysisCompletedEvent event1 =
+        new AIAnalysisCompletedEvent();
+
+event1.setIncidentId(
+        saved.getIncidentId());
+
+event1.setTitle(
+        saved.getIncidentTitle());
+
+event1.setSeverity(
+        saved.getSeverity());
+
+event1.setRootCause(
+        saved.getRootCause());
+
+event1.setRecommendation(
+        saved.getRecommendation());
+
+eventProducer.publish(event1);
 
         response.setIncidentId(
                 saved.getIncidentId());

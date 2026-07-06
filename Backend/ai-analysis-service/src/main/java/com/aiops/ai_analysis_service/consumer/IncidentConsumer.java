@@ -21,7 +21,7 @@ public class IncidentConsumer {
 
     @KafkaListener(
             topics = "incident-events",
-            groupId = "ai-analysis-group",
+            
             containerFactory ="kafkaListenerContainerFactory")
     public void consume(
             IncidentEvent event) {

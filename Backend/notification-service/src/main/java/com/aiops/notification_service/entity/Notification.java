@@ -18,6 +18,7 @@ public class Notification {
 
     private Long incidentId;
 
+    @Column(columnDefinition = "TEXT")
     private String message;
 
     private String severity;

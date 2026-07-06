@@ -1,6 +1,6 @@
 package com.aiops.notification_service.consumer;
 
-import com.aiops.notification_service.dto.IncidentEvent;
+import com.aiops.notification_service.dto.AIAnalysisCompletedEvent;
 import com.aiops.notification_service.dto.NotificationEvent;
 import com.aiops.notification_service.service.NotificationService;
 
@@ -8,11 +8,11 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NotificationConsumer {
+public class AIAnalysisEventConsumer {
 
     private final NotificationService notificationService;
 
-    public NotificationConsumer(
+    public AIAnalysisEventConsumer(
             NotificationService notificationService) {
 
         this.notificationService =
@@ -20,14 +20,14 @@ public class NotificationConsumer {
     }
 
     @KafkaListener(
-            topics = "incident-events",
-            groupId = "notification-group")
+            topics = "ai-analysis-events",
+            groupId = "notification-group-v2")
     public void consume(
-            IncidentEvent event) {
+            AIAnalysisCompletedEvent event) {
 
         System.out.println(
-                "Received: "
-                + event.getTitle());
+                "Received AI Analysis for Incident: "
+                        + event.getTitle());
 
         NotificationEvent notificationEvent =
                 new NotificationEvent();
@@ -35,12 +35,23 @@ public class NotificationConsumer {
         notificationEvent.setIncidentId(
                 event.getIncidentId());
 
-        notificationEvent.setMessage(
-                "New Incident Created: "
-                + event.getTitle());
-
         notificationEvent.setSeverity(
                 event.getSeverity());
+
+        notificationEvent.setMessage(
+                """
+                Incident: %s
+
+                Root Cause:
+                %s
+
+                Recommendation:
+                %s
+                """
+                        .formatted(
+                                event.getTitle(),
+                                event.getRootCause(),
+                                event.getRecommendation()));
 
         notificationService
                 .processNotification(

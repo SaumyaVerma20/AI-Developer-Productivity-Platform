@@ -1,0 +1,3 @@
+curl -X POST http://localhost:8082/api/v1/incidents ^
+-H "Content-Type: application/json" ^
+-d "{\"title\":\"CPU Usage Critical\",\"description\":\"CPU usage exceeded 95% on production server\",\"severity\":\"HIGH\"}"
