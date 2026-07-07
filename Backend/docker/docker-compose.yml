@@ -1,81 +1,250 @@
+version: "3.9"
 
 services:
+
   postgres:
     image: postgres:16
     container_name: aiops-postgres
     restart: always
+
     environment:
-      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
     ports:
       - "5432:5432"
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+    networks:
+      - aiops-network
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: aiops-zookeeper
+
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+    ports:
+      - "2181:2181"
+
+    networks:
+      - aiops-network
+
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: aiops-kafka
+
+    depends_on:
+      - zookeeper
+
+    ports:
+      - "9092:9092"
+
+    environment:
+      KAFKA_BROKER_ID: 1
+
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+    networks:
+      - aiops-network
+
+
   auth-service:
     build:
       context: ../auth-service
-      dockerfile: Dockerfile
+
     container_name: aiops-auth-service
+
     restart: always
+
     ports:
       - "8081:8081"
+
     environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=authdb
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: authdb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
     depends_on:
       - postgres
+
+    networks:
+      - aiops-network
+
 
   incident-service:
     build:
       context: ../incident-service
-      dockerfile: Dockerfile
+
     container_name: aiops-incident-service
+
     restart: always
+
     ports:
       - "8082:8082"
+
     environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=incidentdb
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: incidentdb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
     depends_on:
       - postgres
+      - kafka
+
+    networks:
+      - aiops-network
+
+
+  ai-analysis-service:
+    build:
+      context: ../ai-analysis-service
+
+    container_name: aiops-ai-analysis-service
+
+    restart: always
+
+    ports:
+      - "8083:8083"
+
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: aiops_analysis_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+
+    depends_on:
+      - postgres
+      - kafka
+
+    networks:
+      - aiops-network
+
 
   log-service:
     build:
       context: ../log-service
-      dockerfile: Dockerfile
+
     container_name: aiops-log-service
+
     restart: always
+
     ports:
       - "8084:8084"
+
     environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=logdb
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: logdb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
     depends_on:
       - postgres
+      - kafka
+
+    networks:
+      - aiops-network
+
+
+  notification-service:
+    build:
+      context: ../notification-service
+
+    container_name: aiops-notification-service
+
+    restart: always
+
+    ports:
+      - "8085:8085"
+
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: aiops_notification_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+    depends_on:
+      - postgres
+      - kafka
+
+    networks:
+      - aiops-network
+
+
+  api-gateway:
+    build:
+      context: ../api-gateway
+
+    container_name: aiops-api-gateway
+
+    restart: always
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - auth-service
+      - incident-service
+      - log-service
+      - notification-service
+      - ai-analysis-service
+
+    networks:
+      - aiops-network
+
 
   frontend:
     build:
       context: ../../frontend
-      dockerfile: Dockerfile
+
     container_name: aiops-frontend
+
     restart: always
+
     ports:
-      - "8080:8080"
+      - "4200:80"
+
     depends_on:
-      - auth-service
-      - incident-service
+      - api-gateway
+
+    networks:
+      - aiops-network
+
 
 volumes:
   postgres_data:
+
+
+networks:
+  aiops-network:
+    driver: bridge
